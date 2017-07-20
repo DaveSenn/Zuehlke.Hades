@@ -14,6 +14,7 @@ namespace Zuehlke.Hades.Test.AclService
                 Subjects = new List<string>() { "user:2", "user:3" },
                 Actions = new List<string>() { "read", "write" },
                 Resources = new List<string>() { "qwertz" },
+                Description = "test description",
                 Effect = RequestEffect.Allow
             },
             new PolicyCreationRequest()

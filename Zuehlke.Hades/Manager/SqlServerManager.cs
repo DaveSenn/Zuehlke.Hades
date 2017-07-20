@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Zuehlke.Hades.Interfaces;
@@ -25,7 +26,7 @@ namespace Zuehlke.Hades.Manager
         /// <param name="connectionString">Connection string for the database connection</param>
         public SqlServerManager(string connectionString)
         {
-            if (!connectionString.ToLower().Contains($"{MarsConnectionStringParameter}=true;"))
+            if (connectionString.ToLower().Contains($"{MarsConnectionStringParameter}=false;"))
                 throw new ArgumentException("The database connection string must allow multiple active result sets.");
             _connectionString = connectionString;
         }
@@ -296,7 +297,7 @@ namespace Zuehlke.Hades.Manager
                 {
                     foreach (var template in rel.Value)
                     {
-                        var id = BitConverter.ToString(Encoding.UTF8.GetBytes(template));
+                        var id = Sha256Hash(template);
                         using (var attrCommand = new SqlCommand(string.Format(SqlServerQueries.AddPolicyInsert, rel.Key), con, transaction))
                         {
                             attrCommand.Parameters.Add(SqlServerQueries.AttributeIdParameter.Key,
@@ -394,6 +395,15 @@ namespace Zuehlke.Hades.Manager
                 });
             }
             return null;
+        }
+        private static String Sha256Hash(String value)
+        {
+            using (SHA256 hash = SHA256.Create())
+            {
+                return String.Concat(hash
+                  .ComputeHash(Encoding.UTF8.GetBytes(value))
+                  .Select(item => item.ToString("x2")));
+            }
         }
     }
 }

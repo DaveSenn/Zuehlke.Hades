@@ -35,6 +35,7 @@ namespace Zuehlke.Hades
             Actions = pcr.Actions;
             Resources = pcr.Resources;
             Effect = pcr.Effect;
+            Description = pcr.Description;
             Conditions = pcr.Conditions;
         }
         public string Description { get; set; } = "";

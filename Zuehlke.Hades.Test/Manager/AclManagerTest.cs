@@ -162,6 +162,7 @@ namespace Zuehlke.Hades.Test.Manager
             }
             CollectionAssert.AreEqual(expected.Conditions, actual.Conditions);
             Assert.AreEqual(expected.Effect, actual.Effect);
+            Assert.AreEqual(expected.Description, actual.Description);
         }
         private void AssertPoliciesAreEqual(Policy expected, Policy actual)
         {
