@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
-using System.Text;
 
 namespace Zuehlke.Hades.Manager
 {
     public static class SqlServerQueries
     {
         #region CreateTables
-        public static readonly List<string> CreateTableQueries = new List<string>() {
+        public static readonly List<string> CreateTableQueries = new List<string>
+        {
             @"IF object_id('hades_policy', 'U') is null
                 CREATE TABLE hades_policy (
 	                id varchar(255) NOT NULL PRIMARY KEY,
@@ -83,7 +82,7 @@ namespace Zuehlke.Hades.Manager
 	                FOREIGN KEY (resource) REFERENCES hades_resource(id) ON DELETE CASCADE
                 )"
         };
-        public static readonly List<string> CreateIndexQueries = new List<string>()
+        public static readonly List<string> CreateIndexQueries = new List<string>
         {
             @"IF NOT EXISTS (SELECT 1 FROM sys.fulltext_catalogs WHERE [name] = 'hades_catalog')
                 CREATE FULLTEXT CATALOG hades_catalog AS DEFAULT;",
@@ -142,6 +141,12 @@ namespace Zuehlke.Hades.Manager
                 ( subject.has_regex != 1 AND subject.template = @subject )
                 OR
                 ( subject.has_regex = 1 AND @subject LIKE subject.compiled ))";
+        public static string GetRequestCandidatesbyResourceAndSubjectQuery = GetAllPoliciesQuery +
+            @" WHERE CONTAINS(subject.compiled, @subject) AND (
+                ( subject.has_regex != 1 AND subject.template = @subject )
+                OR
+                ( subject.has_regex = 1 AND @subject LIKE subject.compiled ))
+               AND resource.template = @resource";
         #endregion
 
         #region Parameters
@@ -163,6 +168,8 @@ namespace Zuehlke.Hades.Manager
             new KeyValuePair<string, SqlDbType>("@hasregex", SqlDbType.Bit);
         public static readonly KeyValuePair<string, SqlDbType> RequestSubjectParameter =
             new KeyValuePair<string, SqlDbType>("@subject", SqlDbType.VarChar);
+        public static readonly KeyValuePair<string, SqlDbType> RequestResourceParameter =
+            new KeyValuePair<string, SqlDbType>("@resource", SqlDbType.VarChar);
         #endregion
     }
 }

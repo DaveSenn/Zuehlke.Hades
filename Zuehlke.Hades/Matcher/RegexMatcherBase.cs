@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Zuehlke.Hades.Interfaces;
 
@@ -13,8 +10,8 @@ namespace Zuehlke.Hades.Matcher
     public abstract class RegexMatcherBase : IMatcher
     {
         protected abstract IRegexConverter RegexConverter { get; }
-        private LRUCache<string, string> _cache;
-        private IRegexConverter _regexConverter;
+        private readonly LRUCache<string, string> _cache;
+        private readonly IRegexConverter _regexConverter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RegexMatcherBase"/> class with the given cache capacity.
@@ -43,7 +40,6 @@ namespace Zuehlke.Hades.Matcher
                     {
                         return true;
                     }
-                    continue;
                 }
                 else
                 {

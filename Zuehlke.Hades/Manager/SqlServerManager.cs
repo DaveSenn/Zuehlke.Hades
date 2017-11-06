@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Zuehlke.Hades.Interfaces;
 using Zuehlke.Hades.Matcher;
 
@@ -18,7 +18,6 @@ namespace Zuehlke.Hades.Manager
     {
         private readonly string _connectionString;
         private const string MarsConnectionStringParameter = "multipleactiveresultsets";
-        private IMatcher _matcher = new SqlServerRegexMatcher();
 
         /// <summary>
         /// Initializes a new instance of <see cref="SqlServerManager"/> with the given connection string
@@ -34,7 +33,7 @@ namespace Zuehlke.Hades.Manager
         /// <summary>
         /// Handles the matching of attributes
         /// </summary>
-        public IMatcher Matcher => _matcher;
+        public IMatcher Matcher { get; } = new SqlServerRegexMatcher();
 
         /// <summary>
         /// Adds a policy asynchronously with the information provided as a <see cref="PolicyCreationRequest"/>.
@@ -134,9 +133,22 @@ namespace Zuehlke.Hades.Manager
             using (var con = new SqlConnection(_connectionString))
             {
                 await con.OpenAsync();
-                var command = new SqlCommand(SqlServerQueries.GetRequestCandidatesQuery, con);
-                command.Parameters.Add(SqlServerQueries.RequestSubjectParameter.Key,
-                    SqlServerQueries.RequestSubjectParameter.Value).Value = request.Subject;
+                SqlCommand command;
+
+                if (string.IsNullOrEmpty(request.Resource))
+                {
+                    command = new SqlCommand(SqlServerQueries.GetRequestCandidatesQuery, con);
+                    command.Parameters.Add(SqlServerQueries.RequestSubjectParameter.Key,
+                        SqlServerQueries.RequestSubjectParameter.Value).Value = request.Subject;
+                }
+                else
+                {
+                    command = new SqlCommand(SqlServerQueries.GetRequestCandidatesbyResourceAndSubjectQuery, con);
+                    command.Parameters.Add(SqlServerQueries.RequestSubjectParameter.Key,
+                        SqlServerQueries.RequestSubjectParameter.Value).Value = request.Subject;
+                    command.Parameters.Add(SqlServerQueries.RequestResourceParameter.Key,
+                        SqlServerQueries.RequestResourceParameter.Value).Value = request.Resource;
+                }
                 using (var reader = await command.ExecuteReaderAsync())
                 {
                     return await GetPoliciesFromRowsAsync(reader);
@@ -270,7 +282,7 @@ namespace Zuehlke.Hades.Manager
                 var conditionsJson = string.Empty;
                 if(policy.Conditions != null && policy.Conditions.Count > 0)
                 {
-                    conditionsJson = JsonConvert.SerializeObject(policy.Conditions, Formatting.Indented, new JsonSerializerSettings()
+                    conditionsJson = JsonConvert.SerializeObject(policy.Conditions, Formatting.Indented, new JsonSerializerSettings
                     {
                         TypeNameHandling = TypeNameHandling.Objects,
                         TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple
@@ -287,12 +299,12 @@ namespace Zuehlke.Hades.Manager
                     transaction.Rollback();
                     throw ex;
                 }
-                var relations = new List<KeyValuePair<string, List<string>>>()
-                        {
-                            new KeyValuePair<string, List<string>>("action", policy.Actions),
-                            new KeyValuePair<string, List<string>>("resource", policy.Resources),
-                            new KeyValuePair<string, List<string>>("subject", policy.Subjects)
-                        };
+                var relations = new List<KeyValuePair<string, List<string>>>
+                {
+                    new KeyValuePair<string, List<string>>("action", policy.Actions),
+                    new KeyValuePair<string, List<string>>("resource", policy.Resources),
+                    new KeyValuePair<string, List<string>>("subject", policy.Subjects)
+                };
                 foreach (var rel in relations)
                 {
                     foreach (var template in rel.Value)
@@ -364,7 +376,7 @@ namespace Zuehlke.Hades.Manager
                     policies[id].Resources.Add(resource);
                 }
                 else {
-                    policies.Add(id, new Policy()
+                    policies.Add(id, new Policy
                     {
                         Id = id,
                         Description = reader["description"].ToString(),
@@ -389,7 +401,7 @@ namespace Zuehlke.Hades.Manager
         {
             if(!string.IsNullOrWhiteSpace(conditionJson))
             {
-                return JsonConvert.DeserializeObject<List<ICondition>>(conditionJson, new JsonSerializerSettings()
+                return JsonConvert.DeserializeObject<List<ICondition>>(conditionJson, new JsonSerializerSettings
                 {
                     TypeNameHandling = TypeNameHandling.Objects
                 });

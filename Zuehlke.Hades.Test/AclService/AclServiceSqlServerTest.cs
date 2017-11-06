@@ -1,8 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Zuehlke.Hades.Manager;
 
 namespace Zuehlke.Hades.Test.AclService
@@ -10,9 +7,9 @@ namespace Zuehlke.Hades.Test.AclService
     [TestClass]
     public class AclServiceSqlServerTest : AclServiceTestBase
     {
-        protected async override Task<Hades.AclService> GetAclServiceAsync()
+        protected override async Task<Hades.AclService> GetAclServiceAsync()
         {
-            var manager = new SqlServerManager("{your-connection-string-here}");
+            var manager = new SqlServerManager(AppSettings.ConnectionString);
             await manager.CreateDatabaseSchemaAsync();
             return new Hades.AclService(manager);
         }

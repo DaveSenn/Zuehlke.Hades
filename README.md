@@ -1,4 +1,4 @@
-# Zuehlke.Hades (A SDK for access control policies)
+# Zuehlke.Hades (SDK for access control policies)
 Currently it is possible to use it in memory and with a SQL database (T-SQL) other persistence can be achieved through implementing the IAclManager interface. It supports (custom) conditions to check additional information and custom matching to improve the performance in certain scenarios.
 
 ## Overview
@@ -11,14 +11,14 @@ This repository consists of one Visual Studio solution, which hosts two projects
 The AclService handles the access control checks. By default it uses an in memory policy manager and searches for exact matches:  
 ```csharp
 var aclservice = new AclService();
-var result = await aclservice.CheckAccessAsync(new AccessRequest(){
+var result = await aclservice.CheckAccessAsync(new AccessRequest() {
     Subject = "user:2",
     Action = "write",
     Resource = "qwertz"
 });
-if(result == AccessRequestResult.Granted){
+if (result == AccessRequestResult.Granted) {
     //allow
-}else{
+} else {
     //deny
 }
 ```

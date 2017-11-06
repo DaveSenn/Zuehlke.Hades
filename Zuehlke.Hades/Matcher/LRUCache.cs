@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Zuehlke.Hades.Matcher
 {
@@ -13,9 +10,9 @@ namespace Zuehlke.Hades.Matcher
     public class LRUCache<K, V>
     {
         private readonly object _locker = new object();
-        private int _capacity;
-        private Dictionary<K, LinkedListNode<LRUCacheItem<K, V>>> _cacheMap = new Dictionary<K, LinkedListNode<LRUCacheItem<K, V>>>();
-        private LinkedList<LRUCacheItem<K, V>> _lruList = new LinkedList<LRUCacheItem<K, V>>();
+        private readonly int _capacity;
+        private readonly Dictionary<K, LinkedListNode<LRUCacheItem<K, V>>> _cacheMap = new Dictionary<K, LinkedListNode<LRUCacheItem<K, V>>>();
+        private readonly LinkedList<LRUCacheItem<K, V>> _lruList = new LinkedList<LRUCacheItem<K, V>>();
 
         /// <summary>
         /// Initializes a new instance of an <see cref="LRUCache{K, V}"/> with the given capacity.

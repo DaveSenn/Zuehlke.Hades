@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Zuehlke.Hades.Interfaces;
@@ -14,14 +13,13 @@ namespace Zuehlke.Hades.Manager
     /// </summary>
     public class InMemoryManager : IAclManager
     {
-        private Dictionary<string, Policy> _activePolicies = new Dictionary<string, Policy>();
+        private readonly Dictionary<string, Policy> _activePolicies = new Dictionary<string, Policy>();
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
-        private IMatcher _matcher = new ExactMatcher();
 
         /// <summary>
         /// Handles the matching of attributes
         /// </summary>
-        public IMatcher Matcher => _matcher;
+        public IMatcher Matcher { get; } = new ExactMatcher();
 
         /// <summary>
         /// Initializes a new instance of <see cref="InMemoryManager"/> with the provided <see cref="IMatcher"/>
@@ -31,7 +29,7 @@ namespace Zuehlke.Hades.Manager
         {
             if (matcher != null)
             {
-                _matcher = matcher;
+                Matcher = matcher;
             }
         }
 
@@ -45,8 +43,10 @@ namespace Zuehlke.Hades.Manager
             await _semaphore.WaitAsync();
             try
             {
-                var newPolicy = new Policy(policyCreationRequest);
-                newPolicy.Id = Guid.NewGuid().ToString();
+                var newPolicy = new Policy(policyCreationRequest)
+                {
+                    Id = Guid.NewGuid().ToString()
+                };
                 _activePolicies.Add(newPolicy.Id, newPolicy);
                 return await Task.FromResult(newPolicy);
             }

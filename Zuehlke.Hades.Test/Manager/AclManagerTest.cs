@@ -1,9 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Zuehlke.Hades.Interfaces;
 
 namespace Zuehlke.Hades.Test.Manager
@@ -11,38 +9,37 @@ namespace Zuehlke.Hades.Test.Manager
     [TestClass]
     public abstract class AclManagerTest
     {
-        public abstract Task<IAclManager> GetManagerAsync();
-        private List<Policy> _policiesToDelete = new List<Policy>();
-        private IAclManager _manager;
+        protected abstract Task<IAclManager> GetManagerAsync();
+        protected readonly List<Policy> PoliciesToDelete = new List<Policy>();
+        protected IAclManager Manager;
 
         [TestMethod]
         public async Task AddPolicy_AddTestPolicy_ReturnsCorrectPolicy()
         {
-            _manager = await GetManagerAsync();
-            var policy = await _manager.AddPolicyAsync(TestData.PolicyCreationRequest);
-            _policiesToDelete.Add(policy);
-            var pcr = policy as PolicyCreationRequest;
-            AssertPolicyCreationRequestsAreEqual(TestData.PolicyCreationRequest, pcr);
+            Manager = await GetManagerAsync();
+            var policy = await Manager.AddPolicyAsync(TestData.PolicyCreationRequest);
+            PoliciesToDelete.Add(policy);
+            AssertPolicyCreationRequestsAreEqual(TestData.PolicyCreationRequest, policy);
             Assert.IsTrue(Guid.TryParse(policy.Id, out var guid));
         }
 
         [TestMethod]
         public async Task AddPolicy_AddTestPolicy_Succeeds()
         {
-            _manager = await GetManagerAsync();
-            var policy = await _manager.AddPolicyAsync(TestData.PolicyCreationRequest);
-            _policiesToDelete.Add(policy);
-            var result = await _manager.GetPolicyByIdAsync(policy.Id);
+            Manager = await GetManagerAsync();
+            var policy = await Manager.AddPolicyAsync(TestData.PolicyCreationRequest);
+            PoliciesToDelete.Add(policy);
+            var result = await Manager.GetPolicyByIdAsync(policy.Id);
             AssertPoliciesAreEqual(policy, result);
         }
 
         [TestMethod]
         public async Task DeletePolicy_DeleteTestPolicy_ReturnsTrue()
         {
-            _manager = await GetManagerAsync();
-            var policy = await _manager.AddPolicyAsync(TestData.PolicyCreationRequest);
-            _policiesToDelete.Add(policy);
-            Assert.IsTrue(await _manager.DeletePolicyAsync(policy.Id));
+            Manager = await GetManagerAsync();
+            var policy = await Manager.AddPolicyAsync(TestData.PolicyCreationRequest);
+            PoliciesToDelete.Add(policy);
+            Assert.IsTrue(await Manager.DeletePolicyAsync(policy.Id));
         }
 
         [TestMethod]
@@ -54,23 +51,23 @@ namespace Zuehlke.Hades.Test.Manager
         [TestMethod]
         public async Task UpdatePolicy_UpdateTestPolicy_Succeeds()
         {
-            _manager = await GetManagerAsync();
-            var policy = await _manager.AddPolicyAsync(TestData.PolicyCreationRequest);
-            _policiesToDelete.Add(policy);
+            Manager = await GetManagerAsync();
+            var policy = await Manager.AddPolicyAsync(TestData.PolicyCreationRequest);
+            PoliciesToDelete.Add(policy);
             var updatePolicy = new Policy(TestData.UpdatePolicyCreationRequest) { Id = policy.Id };
-            var updatedPolicy = await _manager.UpdatePolicyAsync(updatePolicy);
-            var result = await _manager.GetPolicyByIdAsync(policy.Id);
+            var updatedPolicy = await Manager.UpdatePolicyAsync(updatePolicy);
+            var result = await Manager.GetPolicyByIdAsync(policy.Id);
             AssertPoliciesAreEqual(updatePolicy, result);
         }
 
         [TestMethod]
         public async Task UpdatePolicy_UpdateTestPolicy_ReturnsUpdatedPolicy()
         {
-            _manager = await GetManagerAsync();
-            var policy = await _manager.AddPolicyAsync(TestData.PolicyCreationRequest);
-            _policiesToDelete.Add(policy);
+            Manager = await GetManagerAsync();
+            var policy = await Manager.AddPolicyAsync(TestData.PolicyCreationRequest);
+            PoliciesToDelete.Add(policy);
             var updatePolicy = new Policy(TestData.UpdatePolicyCreationRequest) { Id = policy.Id };
-            var updatedPolicy = await _manager.UpdatePolicyAsync(updatePolicy);
+            var updatedPolicy = await Manager.UpdatePolicyAsync(updatePolicy);
             AssertPoliciesAreEqual(updatePolicy, updatedPolicy);
         }
 
@@ -88,10 +85,10 @@ namespace Zuehlke.Hades.Test.Manager
         [TestMethod]
         public async Task GetPolicyById_GetTestPolicy_ReturnsTestPolicy()
         {
-            _manager = await GetManagerAsync();
-            var policy = await _manager.AddPolicyAsync(TestData.PolicyCreationRequest);
-            _policiesToDelete.Add(policy);
-            var result = await _manager.GetPolicyByIdAsync(policy.Id);
+            Manager = await GetManagerAsync();
+            var policy = await Manager.AddPolicyAsync(TestData.PolicyCreationRequest);
+            PoliciesToDelete.Add(policy);
+            var result = await Manager.GetPolicyByIdAsync(policy.Id);
             AssertPoliciesAreEqual(policy, result);
         }
 
@@ -106,33 +103,14 @@ namespace Zuehlke.Hades.Test.Manager
         [TestMethod]
         public async Task GetAllPolicies_GetFullList_ReturnsCompleteList()
         {
-            _manager = await GetManagerAsync();
+            Manager = await GetManagerAsync();
             foreach(var pcr in TestData.PolicyCreationRequests)
             {
-                var policy = await _manager.AddPolicyAsync(pcr);
-                _policiesToDelete.Add(policy);
+                var policy = await Manager.AddPolicyAsync(pcr);
+                PoliciesToDelete.Add(policy);
             }
-            var policies = await _manager.GetAllPoliciesAsync();
+            var policies = await Manager.GetAllPoliciesAsync();
             Assert.AreEqual(TestData.PolicyCreationRequests.Count, policies.Count);
-        }
-
-        [TestMethod]
-        public async Task GetRequestCandidates_GetTestCandidates_ReturnsCompleteList()
-        {
-            _manager = await GetManagerAsync();
-            foreach (var pcr in TestData.PolicyCreationRequests)
-            {
-                var policy = await _manager.AddPolicyAsync(pcr);
-                _policiesToDelete.Add(policy);
-            }
-            var result = await _manager.GetRequestCandidatesAsync(new AccessRequest()
-            {
-                Subject = TestData.CandidatesForSubject.Key,
-                Resource = TestData.PolicyCreationRequests.First().Resources.First(),
-                Action = TestData.PolicyCreationRequests.First().Actions.First()
-            });
-            Assert.IsTrue(result.Count > 0);
-            CollectionAssert.AllItemsAreNotNull(result);
         }
 
         private void AssertPolicyCreationRequestsAreEqual(PolicyCreationRequest expected, PolicyCreationRequest actual)
@@ -164,17 +142,19 @@ namespace Zuehlke.Hades.Test.Manager
             Assert.AreEqual(expected.Effect, actual.Effect);
             Assert.AreEqual(expected.Description, actual.Description);
         }
+
         private void AssertPoliciesAreEqual(Policy expected, Policy actual)
         {
             Assert.AreEqual(expected.Id, actual.Id);
-            AssertPolicyCreationRequestsAreEqual(expected as PolicyCreationRequest, actual as PolicyCreationRequest);
+            AssertPolicyCreationRequestsAreEqual(expected, actual);
         }
+
         [TestCleanup]
         public async Task Cleanup()
         {
-            foreach(var policy in _policiesToDelete)
+            foreach(var policy in PoliciesToDelete)
             {
-                await _manager.DeletePolicyAsync(policy.Id);
+                await Manager.DeletePolicyAsync(policy.Id);
             }
         }
     }

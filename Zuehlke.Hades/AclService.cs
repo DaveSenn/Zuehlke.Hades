@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Zuehlke.Hades.Interfaces;
 using Zuehlke.Hades.Manager;
-using Zuehlke.Hades.Matcher;
 
 namespace Zuehlke.Hades
 {
@@ -24,7 +21,7 @@ namespace Zuehlke.Hades
         /// <param name="manager">A <see cref="IAclManager"/> for the policies (default: in memory)</param>
         public AclService(IAclManager manager = null)
         {
-            if(manager == null)
+            if (manager == null)
             {
                 manager = new InMemoryManager();
             }
@@ -39,7 +36,7 @@ namespace Zuehlke.Hades
         public async Task<AccessRequestResult> CheckAccessAsync(AccessRequest request)
         {
             var candidates = await Manager.GetRequestCandidatesAsync(request);
-            if(candidates == null || candidates.Count <= 0)
+            if (candidates == null || candidates.Count <= 0)
             {
                 return await Task.FromResult(AccessRequestResult.Denied);
             }
@@ -55,31 +52,31 @@ namespace Zuehlke.Hades
         private async Task<AccessRequestResult> DoPoliciesAllow(AccessRequest request, List<Policy> candidates)
         {
             bool isAllowed = false;
-            foreach(var policy in candidates)
+            foreach (var policy in candidates)
             {
-                if(!Manager.Matcher.Matches(policy.Actions, request.Action))
+                if (!Manager.Matcher.Matches(policy.Actions, request.Action))
                 {
                     continue;
                 }
-                if(!Manager.Matcher.Matches(policy.Subjects, request.Subject))
+                if (!Manager.Matcher.Matches(policy.Subjects, request.Subject))
                 {
                     continue;
                 }
-                if(!Manager.Matcher.Matches(policy.Resources, request.Resource))
+                if (!Manager.Matcher.Matches(policy.Resources, request.Resource))
                 {
                     continue;
                 }
-                if(!PassesConditions(policy.Conditions, request))
+                if (!PassesConditions(policy.Conditions, request))
                 {
                     continue;
                 }
-                if(policy.Effect == RequestEffect.Deny)
+                if (policy.Effect == RequestEffect.Deny)
                 {
                     return await Task.FromResult(AccessRequestResult.ExplicitlyDenied);
                 }
                 isAllowed = true;
             }
-            if(isAllowed)
+            if (isAllowed)
             {
                 return await Task.FromResult(AccessRequestResult.Granted);
             }

@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Zuehlke.Hades.Interfaces;
 
 namespace Zuehlke.Hades.Condition

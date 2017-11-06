@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Zuehlke.Hades
+﻿namespace Zuehlke.Hades
 {
     public enum AccessRequestResult
     {

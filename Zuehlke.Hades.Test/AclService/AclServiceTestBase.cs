@@ -1,12 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Zuehlke.Hades;
-using Zuehlke.Hades.Interfaces;
-using Zuehlke.Hades.Manager;
-using Zuehlke.Hades.Matcher;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Zuehlke.Hades.Test.AclService
 {
@@ -14,7 +8,8 @@ namespace Zuehlke.Hades.Test.AclService
     public abstract class AclServiceTestBase
     {
         private Hades.AclService _acl;
-        private List<Policy> _policiesToDelete = new List<Policy>();
+        private readonly List<Policy> _policiesToDelete = new List<Policy>();
+
         [TestMethod]
         public async Task CheckAccess_CheckTestRequests_ReturnsGranted()
         {

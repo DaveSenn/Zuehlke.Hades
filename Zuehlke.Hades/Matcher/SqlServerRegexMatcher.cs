@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Zuehlke.Hades.Interfaces;
 
 namespace Zuehlke.Hades.Matcher
@@ -11,7 +8,7 @@ namespace Zuehlke.Hades.Matcher
     /// </summary>
     public class SqlServerRegexMatcher : RegexMatcherBase
     {
-        private readonly char[] patternChars = new char[] { '%', '_', '[', ']' };
+        private readonly char[] patternChars = { '%', '_', '[', ']' };
 
         protected override IRegexConverter RegexConverter => new SqlServerRegexConverter();
 
@@ -22,7 +19,7 @@ namespace Zuehlke.Hades.Matcher
         /// <returns>true if it is a like pattern / false if not</returns>
         public override bool IsRegexLikePattern(string str)
         {
-            return patternChars.Any(pc => str.Contains(pc));
+            return patternChars.Any(str.Contains);
         }
     }
 }

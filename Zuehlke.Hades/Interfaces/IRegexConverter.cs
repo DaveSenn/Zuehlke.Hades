@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Zuehlke.Hades.Interfaces
+﻿namespace Zuehlke.Hades.Interfaces
 {
     /// <summary>
     /// Converts a regex like pattern to a C# regex pattern
