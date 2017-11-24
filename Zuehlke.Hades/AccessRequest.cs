@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Zuehlke.Hades.Interfaces;
 
 namespace Zuehlke.Hades
 {
@@ -7,9 +8,21 @@ namespace Zuehlke.Hades
     /// </summary>
     public class AccessRequest
     {
+        /// <summary>
+        /// The subject
+        /// </summary>
         public string Subject { get; set; }
+        /// <summary>
+        /// The action
+        /// </summary>
         public string Action { get; set; }
+        /// <summary>
+        /// The resource
+        /// </summary>
         public string Resource { get; set; }
+        /// <summary>
+        /// Context information, which can be used by <see cref="ICondition"/>
+        /// </summary>
         public Dictionary<string, string> Context { get; set; }
     }
 }

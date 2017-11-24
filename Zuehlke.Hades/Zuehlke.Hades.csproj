@@ -2,17 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.4</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>0.1-beta</Version>
-    <Authors>Malte Götz, Sascha Eglau</Authors>
-    <Owners>maltegoetz,egsa</Owners>
-    <Company>Zühlke Engineering</Company>
-    <Description>Hades is a flexible, policy-based authorization framework.</Description>
-    <PackageTags>ACL Authorization</PackageTags>
-    <PackageReleaseNotes>Initial Release.</PackageReleaseNotes>
-    <AssemblyVersion>0.1</AssemblyVersion>
-    <FileVersion>0.1</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

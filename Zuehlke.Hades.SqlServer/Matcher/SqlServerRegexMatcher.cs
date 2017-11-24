@@ -11,6 +11,9 @@ namespace Zuehlke.Hades.SqlServer.Matcher
     {
         private readonly char[] _patternChars = { '%', '_', '[', ']' };
 
+        /// <summary>
+        /// The <see cref="IRegexConverter"/> to use for converting the regex
+        /// </summary>
         protected override IRegexConverter RegexConverter => new SqlServerRegexConverter();
 
         /// <summary>

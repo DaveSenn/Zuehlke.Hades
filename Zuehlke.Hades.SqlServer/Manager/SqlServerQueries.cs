@@ -3,10 +3,10 @@ using System.Data;
 
 namespace Zuehlke.Hades.SqlServer.Manager
 {
-    public static class SqlServerQueries
+    internal static class SqlServerQueries
     {
         #region CreateTables
-        public static readonly List<string> CreateTableQueries = new List<string>
+        internal static readonly List<string> CreateTableQueries = new List<string>
         {
             @"IF object_id('hades_policy', 'U') is null
                 CREATE TABLE hades_policy (
@@ -82,7 +82,7 @@ namespace Zuehlke.Hades.SqlServer.Manager
 	                FOREIGN KEY (resource) REFERENCES hades_resource(id) ON DELETE CASCADE
                 )"
         };
-        public static readonly List<string> CreateIndexQueries = new List<string>
+        internal static readonly List<string> CreateIndexQueries = new List<string>
         {
             @"IF NOT EXISTS (SELECT 1 FROM sys.fulltext_catalogs WHERE [name] = 'hades_catalog')
                 CREATE FULLTEXT CATALOG hades_catalog AS DEFAULT;",
@@ -104,15 +104,15 @@ namespace Zuehlke.Hades.SqlServer.Manager
         };
         #endregion
         #region Add
-        public static string AddPolicyQuery =
+        internal static string AddPolicyQuery =
             @"INSERT INTO hades_policy (id, description, effect, conditions)
                 SELECT @pid, @pdescription, @peffect, @pconditions WHERE NOT EXISTS (
                     SELECT 1 FROM hades_policy WHERE id = @pid)";
-        public static string AddPolicyInsert =
+        internal static string AddPolicyInsert =
             @"INSERT INTO hades_{0} (id, template, compiled, has_regex)
                 SELECT @attrid, @template, @compiled, @hasregex
                 WHERE NOT EXISTS (SELECT 1 FROM hades_{0} WHERE id = @attrid)";
-        public static string AddPolicyInsertRelation =
+        internal static string AddPolicyInsertRelation =
             @"INSERT INTO hades_policy_{0}_rel (policy, {0})
                 SELECT @pid, @attrid WHERE NOT EXISTS (
                     SELECT 1 FROM hades_policy_{0}_rel
@@ -120,10 +120,10 @@ namespace Zuehlke.Hades.SqlServer.Manager
 
         #endregion
         #region Delete
-        public static string DeletePolicyQuery = "DELETE FROM hades_policy WHERE id = @pid";
+        internal static string DeletePolicyQuery = "DELETE FROM hades_policy WHERE id = @pid";
         #endregion
         #region Get
-        public static string GetAllPoliciesQuery =
+        internal static string GetAllPoliciesQuery =
             @"SELECT
 	            p.id, p.effect, p.conditions, p.description,
 	            subject.template as subject, resource.template as resource, action.template as action
@@ -135,13 +135,13 @@ namespace Zuehlke.Hades.SqlServer.Manager
             LEFT JOIN hades_subject as subject ON rs.subject = subject.id
             LEFT JOIN hades_action as action ON ra.action = action.id
             LEFT JOIN hades_resource as resource ON rr.resource = resource.id";
-        public static string GetPolicyByIdQuery = GetAllPoliciesQuery + " WHERE p.Id = @pid";
-        public static string GetRequestCandidatesQuery = GetAllPoliciesQuery +
+        internal static string GetPolicyByIdQuery = GetAllPoliciesQuery + " WHERE p.Id = @pid";
+        internal static string GetRequestCandidatesQuery = GetAllPoliciesQuery +
             @" WHERE CONTAINS(subject.compiled, @subject) AND (
                 ( subject.has_regex != 1 AND subject.template = @subject )
                 OR
                 ( subject.has_regex = 1 AND @subject LIKE subject.compiled ))";
-        public static string GetRequestCandidatesbyResourceAndSubjectQuery = GetAllPoliciesQuery +
+        internal static string GetRequestCandidatesbyResourceAndSubjectQuery = GetAllPoliciesQuery +
             @" WHERE CONTAINS(subject.compiled, @subject) AND (
                 ( subject.has_regex != 1 AND subject.template = @subject )
                 OR
@@ -150,25 +150,25 @@ namespace Zuehlke.Hades.SqlServer.Manager
         #endregion
 
         #region Parameters
-        public static readonly KeyValuePair<string, SqlDbType> PolicyIdParameter =
+        internal static readonly KeyValuePair<string, SqlDbType> PolicyIdParameter =
             new KeyValuePair<string, SqlDbType>("@pid", SqlDbType.VarChar);
-        public static readonly KeyValuePair<string, SqlDbType> PolicyDescriptionParameter =
+        internal static readonly KeyValuePair<string, SqlDbType> PolicyDescriptionParameter =
             new KeyValuePair<string, SqlDbType>("@pdescription", SqlDbType.Text);
-        public static readonly KeyValuePair<string, SqlDbType> PolicyEffectParameter =
+        internal static readonly KeyValuePair<string, SqlDbType> PolicyEffectParameter =
             new KeyValuePair<string, SqlDbType>("@peffect", SqlDbType.Bit);
-        public static readonly KeyValuePair<string, SqlDbType> PolicyConditionsParameter =
+        internal static readonly KeyValuePair<string, SqlDbType> PolicyConditionsParameter =
             new KeyValuePair<string, SqlDbType>("@pconditions", SqlDbType.Text);
-        public static readonly KeyValuePair<string, SqlDbType> AttributeIdParameter =
+        internal static readonly KeyValuePair<string, SqlDbType> AttributeIdParameter =
             new KeyValuePair<string, SqlDbType>("@attrid", SqlDbType.VarChar);
-        public static readonly KeyValuePair<string, SqlDbType> AttributeTemplateParameter =
+        internal static readonly KeyValuePair<string, SqlDbType> AttributeTemplateParameter =
             new KeyValuePair<string, SqlDbType>("@template", SqlDbType.VarChar);
-        public static readonly KeyValuePair<string, SqlDbType> AttributeCompiledParameter =
+        internal static readonly KeyValuePair<string, SqlDbType> AttributeCompiledParameter =
             new KeyValuePair<string, SqlDbType>("@compiled", SqlDbType.VarChar);
-        public static readonly KeyValuePair<string, SqlDbType> AttributeHasRegexParameter =
+        internal static readonly KeyValuePair<string, SqlDbType> AttributeHasRegexParameter =
             new KeyValuePair<string, SqlDbType>("@hasregex", SqlDbType.Bit);
-        public static readonly KeyValuePair<string, SqlDbType> RequestSubjectParameter =
+        internal static readonly KeyValuePair<string, SqlDbType> RequestSubjectParameter =
             new KeyValuePair<string, SqlDbType>("@subject", SqlDbType.VarChar);
-        public static readonly KeyValuePair<string, SqlDbType> RequestResourceParameter =
+        internal static readonly KeyValuePair<string, SqlDbType> RequestResourceParameter =
             new KeyValuePair<string, SqlDbType>("@resource", SqlDbType.VarChar);
         #endregion
     }

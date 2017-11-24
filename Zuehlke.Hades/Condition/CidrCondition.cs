@@ -18,7 +18,7 @@ namespace Zuehlke.Hades.Condition
         /// <summary>
         /// The subnet in CIDR notation that should be checked against
         /// </summary>
-        public string Value { get; private set; }
+        public string Value { get; }
 
         [JsonConstructor]
         private CidrCondition() { }
@@ -39,11 +39,7 @@ namespace Zuehlke.Hades.Condition
         /// <returns>true if the ip is part of the subnet / false if not</returns>
         public bool FulfillsCondition(AccessRequest request)
         {
-            if(request.Context.ContainsKey(Key))
-            {
-                return (IsInRange(request.Context[Key], Value));
-            }
-            return false;
+            return request.Context.ContainsKey(Key) && IsInRange(request.Context[Key], Value);
         }
 
         /// <summary>
@@ -52,15 +48,15 @@ namespace Zuehlke.Hades.Condition
         /// <param name="ipAddress">The ip that should be checked</param>
         /// <param name="CIDRmask">The CIDR mask that should be checked against</param>
         /// <returns>true if the mask is applicable / false if not</returns>
-        private bool IsInRange(string ipAddress, string CIDRmask)
+        private static bool IsInRange(string ipAddress, string CIDRmask)
         {
-            string[] parts = CIDRmask.Split('/');
+            var parts = CIDRmask.Split('/');
 
-            int IP_addr = BitConverter.ToInt32(IPAddress.Parse(parts[0]).GetAddressBytes(), 0);
-            int CIDR_addr = BitConverter.ToInt32(IPAddress.Parse(ipAddress).GetAddressBytes(), 0);
-            int CIDR_mask = IPAddress.HostToNetworkOrder(-1 << (32 - int.Parse(parts[1])));
+            var ipAddr = BitConverter.ToInt32(IPAddress.Parse(parts[0]).GetAddressBytes(), 0);
+            var cidrAddr = BitConverter.ToInt32(IPAddress.Parse(ipAddress).GetAddressBytes(), 0);
+            var cidrMask = IPAddress.HostToNetworkOrder(-1 << (32 - int.Parse(parts[1])));
 
-            return ((IP_addr & CIDR_mask) == (CIDR_addr & CIDR_mask));
+            return (ipAddr & cidrMask) == (cidrAddr & cidrMask);
         }
     }
 }

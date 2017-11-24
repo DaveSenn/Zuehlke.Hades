@@ -1,17 +1,25 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
+    <id>Zuehlke.Hades</id>
+    <version>0.1-beta</version>
+    <title>Hades</title>
+    <authors>Malte Götz, Sascha Eglau</authors>
     <owners>maltegoetz,egsa</owners>
     <licenseUrl>https://raw.githubusercontent.com/Zuehlke/Zuehlke.Hades/master/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/Zuehlke/Zuehlke.Hades</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
+    <description>Hades is a flexible, policy-based authorization framework.</description>
     <releaseNotes>Initial release.</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>ACL Authorization SqlServer</tags>
+    <dependencies>
+      <dependency id="Zuehlke.Hades" version="0.1" />
+    </dependencies>
   </metadata>
+  <files>
+    <file src="..\README.md" target="" />
+    <file src="bin\Release\netstandard1.4\Zuehlke.Hades.SqlServer.dll" target="lib\netstandard1.4\Zuehlke.Hades.SqlServer.dll" />
+    <file src="bin\Release\netstandard1.4\Zuehlke.Hades.SqlServer.xml" target="lib\netstandard1.4\Zuehlke.Hades.SqlServer.xml" />
+  </files>
 </package>

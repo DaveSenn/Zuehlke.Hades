@@ -9,9 +9,11 @@ namespace Zuehlke.Hades.Matcher
     /// </summary>
     public abstract class RegexMatcherBase : IMatcher
     {
+        /// <summary>
+        /// The <see cref="IRegexConverter"/> to use for converting the regex
+        /// </summary>
         protected abstract IRegexConverter RegexConverter { get; }
         private readonly LRUCache<string, string> _cache;
-        private readonly IRegexConverter _regexConverter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RegexMatcherBase"/> class with the given cache capacity.
@@ -20,7 +22,6 @@ namespace Zuehlke.Hades.Matcher
         protected RegexMatcherBase(int cacheCapacity = 512)
         {
             _cache = new LRUCache<string, string>(cacheCapacity);
-            _regexConverter = RegexConverter;
         }
 
         /// <summary>
@@ -54,7 +55,7 @@ namespace Zuehlke.Hades.Matcher
                         continue;
                     }
                     //not cached --> convert --> add to cache
-                    var regexString = _regexConverter.Convert(str);
+                    var regexString = RegexConverter.Convert(str);
                     _cache.Add(str, regexString);
                     if(new Regex(regexString).IsMatch(needle))
                     {

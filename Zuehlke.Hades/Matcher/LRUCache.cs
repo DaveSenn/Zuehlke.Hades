@@ -5,14 +5,14 @@ namespace Zuehlke.Hades.Matcher
     /// <summary>
     /// A simple implementation of an LRU-Cache (least recently used)
     /// </summary>
-    /// <typeparam name="K">Key type</typeparam>
-    /// <typeparam name="V">Value type</typeparam>
-    public class LRUCache<K, V>
+    /// <typeparam name="TK">Key type</typeparam>
+    /// <typeparam name="TV">Value type</typeparam>
+    public class LRUCache<TK, TV>
     {
         private readonly object _locker = new object();
         private readonly int _capacity;
-        private readonly Dictionary<K, LinkedListNode<LRUCacheItem<K, V>>> _cacheMap = new Dictionary<K, LinkedListNode<LRUCacheItem<K, V>>>();
-        private readonly LinkedList<LRUCacheItem<K, V>> _lruList = new LinkedList<LRUCacheItem<K, V>>();
+        private readonly Dictionary<TK, LinkedListNode<LRUCacheItem<TK, TV>>> _cacheMap = new Dictionary<TK, LinkedListNode<LRUCacheItem<TK, TV>>>();
+        private readonly LinkedList<LRUCacheItem<TK, TV>> _lruList = new LinkedList<LRUCacheItem<TK, TV>>();
 
         /// <summary>
         /// Initializes a new instance of an <see cref="LRUCache{K, V}"/> with the given capacity.
@@ -26,21 +26,21 @@ namespace Zuehlke.Hades.Matcher
         /// <summary>
         /// Get the value for a given key from the cache
         /// </summary>
-        /// <param name="key">Key of type <see cref="K"/></param>
-        /// <returns>Value of type <see cref="V"/> for the given key</returns>
-        public V Get(K key)
+        /// <param name="key">Key</param>
+        /// <returns>Value for the given key</returns>
+        public TV Get(TK key)
         {
             lock (_locker)
             {
-                LinkedListNode<LRUCacheItem<K, V>> node;
+                LinkedListNode<LRUCacheItem<TK, TV>> node;
                 if (_cacheMap.TryGetValue(key, out node))
                 {
-                    V value = node.Value.value;
+                    TV value = node.Value.value;
                     _lruList.Remove(node);
                     _lruList.AddLast(node);
                     return value;
                 }
-                return default(V);
+                return default(TV);
             }
         }
         
@@ -49,7 +49,7 @@ namespace Zuehlke.Hades.Matcher
         /// </summary>
         /// <param name="key">Key</param>
         /// <param name="val">Value that should be cached</param>
-        public void Add(K key, V val)
+        public void Add(TK key, TV val)
         {
             lock (_locker)
             {
@@ -58,8 +58,8 @@ namespace Zuehlke.Hades.Matcher
                     RemoveFirst();
                 }
 
-                LRUCacheItem<K, V> cacheItem = new LRUCacheItem<K, V>(key, val);
-                LinkedListNode<LRUCacheItem<K, V>> node = new LinkedListNode<LRUCacheItem<K, V>>(cacheItem);
+                LRUCacheItem<TK, TV> cacheItem = new LRUCacheItem<TK, TV>(key, val);
+                LinkedListNode<LRUCacheItem<TK, TV>> node = new LinkedListNode<LRUCacheItem<TK, TV>>(cacheItem);
                 _lruList.AddLast(node);
                 _cacheMap.Add(key, node);
             }
@@ -71,7 +71,7 @@ namespace Zuehlke.Hades.Matcher
         private void RemoveFirst()
         {
             // Remove from LRUPriority
-            LinkedListNode<LRUCacheItem<K, V>> node = _lruList.First;
+            LinkedListNode<LRUCacheItem<TK, TV>> node = _lruList.First;
             _lruList.RemoveFirst();
 
             // Remove from cache
