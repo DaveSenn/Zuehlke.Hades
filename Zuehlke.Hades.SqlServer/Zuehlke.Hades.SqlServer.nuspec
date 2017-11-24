@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>maltegoetz,egsa</owners>
+    <licenseUrl>https://raw.githubusercontent.com/Zuehlke/Zuehlke.Hades/master/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/Zuehlke/Zuehlke.Hades</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Initial release.</releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>ACL Authorization SqlServer</tags>
+  </metadata>
+</package>

@@ -6,6 +6,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Version>0.1-beta</Version>
     <Authors>Malte Götz, Sascha Eglau</Authors>
+    <Owners>maltegoetz,egsa</Owners>
     <Company>Zühlke Engineering</Company>
     <Description>Hades is a flexible, policy-based authorization framework.</Description>
     <PackageTags>ACL Authorization</PackageTags>

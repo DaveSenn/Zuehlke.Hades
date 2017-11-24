@@ -2,9 +2,10 @@
 Currently it is possible to use it in memory and with a SQL database (T-SQL) other persistence can be achieved through implementing the IAclManager interface. It supports (custom) conditions to check additional information and custom matching to improve the performance in certain scenarios.
 
 ## Overview
-This repository consists of one Visual Studio solution, which hosts two projects:
+This repository consists of one Visual Studio solution, which hosts three projects:
 - Zuehlke.Hades (class library that can be embedded into a .NET project)
 - Zuehlke.Hades.Test (unit tests for the class library)
+- Zuehlke.Hades.SqlServer (A SqlServer backend for Hades)
 
 ## Usage
 ### 1. Initializing a new instance of the AclService and using it
@@ -57,3 +58,15 @@ Task<bool> DeletePolicyAsync(string id);
 Task<List<Policy>> GetAllPoliciesAsync();
 Task<List<Policy>> GetRequestCandidatesAsync(AccessRequest request);
 ```
+
+## About
+
+Hades was created and is maintained by [Malte Götz](https://github.com/maltegoetz/) and [Sascha Eglau](https://github.com/tmlye/).
+
+The project is funded by [Zühlke](https://www.zuehlke.com/de/en/).
+
+![Zuehlke](https://avatars2.githubusercontent.com/u/10219568?v=3&s=100)
+
+## Credit
+
+This library is heavily inspired by [Ladon](https://github.com/ory/ladon). The basic structure of the code, the abstract concepts and even most of the SQL statements are the same.
