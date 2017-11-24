@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>Zuehlke.Hades</id>
+    <id>Zuehlke.Hades.SqlServer</id>
     <version>0.1-beta</version>
     <title>Hades</title>
     <authors>Malte Götz, Sascha Eglau</authors>
