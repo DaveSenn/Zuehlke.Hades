@@ -1,9 +1,17 @@
 language: csharp
+solution: Zuehlke.Hades.sln
+
+# Only clone 10 commits
+git:
+  depth: 10
+
+# Disable mono
 mono: none
-dotnet: 2.0.3
-dist: trusty
+dotnet: 2.0.2
 script:
  - dotnet restore
  - dotnet build -c Release
- - nuget pack Zuehlke.Hades/Zuehlke.Hades.nuspec
- - nuget pack Zuehlke.Hades.SqlServer/Zuehlke.Hades.SqlServer.nuspec
+
+# We use osx because it provides a higher version of the dotnet sdk
+os: osx
+osx_image: xcode9.1
