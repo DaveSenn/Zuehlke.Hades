@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>Zuehlke.Hades.SqlServer</id>
-    <version>0.1-beta</version>
+    <version>0.1.1-beta</version>
     <title>Hades</title>
     <authors>Malte Götz, Sascha Eglau</authors>
     <owners>maltegoetz,egsa</owners>
@@ -14,7 +14,7 @@
     <copyright>Copyright 2017</copyright>
     <tags>ACL Authorization SqlServer</tags>
     <dependencies>
-      <dependency id="Zuehlke.Hades" version="0.1" />
+      <dependency id="Zuehlke.Hades" version="0.1-beta" />
       <dependency id="System.Data.SqlClient" version="4.4.0" />
     </dependencies>
   </metadata>
