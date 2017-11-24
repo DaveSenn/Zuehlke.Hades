@@ -18,9 +18,11 @@ namespace Zuehlke.Hades.Condition
         /// <summary>
         /// The subnet in CIDR notation that should be checked against
         /// </summary>
-        public string Value { get; }
+        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
+        public string Value { get; private set; }
 
         [JsonConstructor]
+        // ReSharper disable once UnusedMember.Local
         private CidrCondition() { }
 
         /// <summary>
