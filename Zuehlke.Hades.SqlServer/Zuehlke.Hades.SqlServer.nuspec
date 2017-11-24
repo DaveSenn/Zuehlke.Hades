@@ -9,12 +9,13 @@
     <licenseUrl>https://raw.githubusercontent.com/Zuehlke/Zuehlke.Hades/master/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/Zuehlke/Zuehlke.Hades</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Hades is a flexible, policy-based authorization framework.</description>
+    <description>SqlServer backend for Hades.</description>
     <releaseNotes>Initial release.</releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>ACL Authorization SqlServer</tags>
     <dependencies>
       <dependency id="Zuehlke.Hades" version="0.1" />
+      <dependency id="System.Data.SqlClient" version="4.4.0" />
     </dependencies>
   </metadata>
   <files>
