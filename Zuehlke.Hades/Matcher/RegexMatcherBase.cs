@@ -17,7 +17,7 @@ namespace Zuehlke.Hades.Matcher
         /// Initializes a new instance of the <see cref="RegexMatcherBase"/> class with the given cache capacity.
         /// </summary>
         /// <param name="cacheCapacity">The maximum amout of items the cache should keep</param>
-        public RegexMatcherBase(int cacheCapacity = 512)
+        protected RegexMatcherBase(int cacheCapacity = 512)
         {
             _cache = new LRUCache<string, string>(cacheCapacity);
             _regexConverter = RegexConverter;

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Zuehlke.Hades.Manager;
-using Zuehlke.Hades.Matcher;
+using Zuehlke.Hades.SqlServer.Matcher;
 
 namespace Zuehlke.Hades.Test.AclService
 {

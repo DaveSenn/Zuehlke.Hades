@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Zuehlke.Hades.SqlServer\Zuehlke.Hades.SqlServer.csproj" />
     <ProjectReference Include="..\Zuehlke.Hades\Zuehlke.Hades.csproj" />
   </ItemGroup>
 

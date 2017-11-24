@@ -1,14 +1,15 @@
 ﻿using System.Linq;
 using Zuehlke.Hades.Interfaces;
+using Zuehlke.Hades.Matcher;
 
-namespace Zuehlke.Hades.Matcher
+namespace Zuehlke.Hades.SqlServer.Matcher
 {
     /// <summary>
     /// Handles the matching of attributes for SQL Server in due consideration of T-SQL like patterns
     /// </summary>
     public class SqlServerRegexMatcher : RegexMatcherBase
     {
-        private readonly char[] patternChars = { '%', '_', '[', ']' };
+        private readonly char[] _patternChars = { '%', '_', '[', ']' };
 
         protected override IRegexConverter RegexConverter => new SqlServerRegexConverter();
 
@@ -19,7 +20,7 @@ namespace Zuehlke.Hades.Matcher
         /// <returns>true if it is a like pattern / false if not</returns>
         public override bool IsRegexLikePattern(string str)
         {
-            return patternChars.Any(str.Contains);
+            return _patternChars.Any(str.Contains);
         }
     }
 }

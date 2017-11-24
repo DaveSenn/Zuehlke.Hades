@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Zuehlke.Hades.Interfaces;
-using Zuehlke.Hades.Matcher;
+using Zuehlke.Hades.SqlServer.Matcher;
 
-namespace Zuehlke.Hades.Manager
+namespace Zuehlke.Hades.SqlServer.Manager
 {
     /// <summary>
     /// Manages the policies for the access control in a SQL Server (T-SQL) database
@@ -36,10 +36,10 @@ namespace Zuehlke.Hades.Manager
         public IMatcher Matcher { get; } = new SqlServerRegexMatcher();
 
         /// <summary>
-        /// Adds a policy asynchronously with the information provided as a <see cref="PolicyCreationRequest"/>.
+        /// Adds a policy asynchronously with the information provided as a <see cref="Zuehlke.Hades.PolicyCreationRequest"/>.
         /// </summary>
-        /// <param name="policyCreationRequest">Information to create the new <see cref="Policy"/> with</param>
-        /// <returns>The newly created <see cref="Policy"/></returns>
+        /// <param name="policyCreationRequest">Information to create the new <see cref="Zuehlke.Hades.Policy"/> with</param>
+        /// <returns>The newly created <see cref="Zuehlke.Hades.Policy"/></returns>
         public async Task<Policy> AddPolicyAsync(PolicyCreationRequest policyCreationRequest)
         {
             using (var con = new SqlConnection(_connectionString))
@@ -98,7 +98,7 @@ namespace Zuehlke.Hades.Manager
         /// Get a specific policy by its id asynchronously
         /// </summary>
         /// <param name="id">The id of the policy</param>
-        /// <returns>The <see cref="Policy"/> with the given id</returns>
+        /// <returns>The <see cref="Zuehlke.Hades.Policy"/> with the given id</returns>
         /// <exception cref="KeyNotFoundException">If there is no policy with the given id</exception>
         public async Task<Policy> GetPolicyByIdAsync(string id)
         {
@@ -160,7 +160,7 @@ namespace Zuehlke.Hades.Manager
         /// Updates an existing policy (with the provided id) to the given policy information asynchronously
         /// </summary>
         /// <param name="policy">Updated policy</param>
-        /// <returns>The updated <see cref="Policy"/> (should be the same as the one that was passed into the method)</returns>
+        /// <returns>The updated <see cref="Zuehlke.Hades.Policy"/> (should be the same as the one that was passed into the method)</returns>
         /// <exception cref="KeyNotFoundException">If there is no policy with the id provided in the passed policy</exception>
         public async Task<Policy> UpdatePolicyAsync(Policy policy)
         {
@@ -200,10 +200,10 @@ namespace Zuehlke.Hades.Manager
                             {
                                 await command.ExecuteNonQueryAsync();
                             }
-                            catch (SqlException ex)
+                            catch (SqlException)
                             {
                                 transaction.Rollback();
-                                throw ex;
+                                throw;
                             }
                         }
                     }
@@ -216,13 +216,13 @@ namespace Zuehlke.Hades.Manager
                         await command.ExecuteNonQueryAsync();
                     }
                 }
-            };
+            }
         }
 
         /// <summary>
-        /// Converts a <see cref="RequestEffect"/> to the corresponding bit represented trough an integer
+        /// Converts a <see cref="Zuehlke.Hades.RequestEffect"/> to the corresponding bit represented trough an integer
         /// </summary>
-        /// <param name="effect">The <see cref="RequestEffect"/> enum to convert from</param>
+        /// <param name="effect">The <see cref="Zuehlke.Hades.RequestEffect"/> enum to convert from</param>
         /// <returns>The bit - deny:0, allow:1</returns>
         private int EffectToBit(RequestEffect effect)
         {
@@ -230,10 +230,10 @@ namespace Zuehlke.Hades.Manager
         }
 
         /// <summary>
-        /// Converts the effect bit to the corresponding <see cref="RequestEffect"/> enum 
+        /// Converts the effect bit to the corresponding <see cref="Zuehlke.Hades.RequestEffect"/> enum 
         /// </summary>
         /// <param name="bit">Bit to convert from (0:deny, 1:allow)</param>
-        /// <returns>The corresponding <see cref="RequestEffect"/></returns>
+        /// <returns>The corresponding <see cref="Zuehlke.Hades.RequestEffect"/></returns>
         private RequestEffect BitToEffect(int bit)
         {
             return bit == 1 ? RequestEffect.Allow : RequestEffect.Deny;
@@ -255,17 +255,17 @@ namespace Zuehlke.Hades.Manager
             {
                 return (await command.ExecuteNonQueryAsync() > 0);
             }
-            catch (SqlException ex)
+            catch (SqlException)
             {
                 transaction.Rollback();
-                throw ex;
+                throw;
             }
         }
 
         /// <summary>
         /// Adds a new policy to the SQL database 
         /// </summary>
-        /// <param name="policy">The <see cref="Policy"/> that should be added</param>
+        /// <param name="policy">The <see cref="Zuehlke.Hades.Policy"/> that should be added</param>
         /// <param name="con">The sql connection that should be used</param>
         /// <param name="transaction">The sql transaction that should be used</param>
         /// <returns></returns>
@@ -294,10 +294,10 @@ namespace Zuehlke.Hades.Manager
                 {
                     await command.ExecuteNonQueryAsync();
                 }
-                catch (SqlException ex)
+                catch (SqlException)
                 {
                     transaction.Rollback();
-                    throw ex;
+                    throw;
                 }
                 var relations = new List<KeyValuePair<string, List<string>>>
                 {
@@ -319,16 +319,16 @@ namespace Zuehlke.Hades.Manager
                             attrCommand.Parameters.Add(SqlServerQueries.AttributeCompiledParameter.Key,
                                 SqlServerQueries.AttributeCompiledParameter.Value).Value = template;
                             attrCommand.Parameters.Add(SqlServerQueries.AttributeHasRegexParameter.Key,
-                                SqlServerQueries.AttributeHasRegexParameter.Value).Value = (Matcher as SqlServerRegexMatcher).IsRegexLikePattern(template); 
+                                SqlServerQueries.AttributeHasRegexParameter.Value).Value = ((SqlServerRegexMatcher) Matcher).IsRegexLikePattern(template);
 
                             try
                             {
                                 await attrCommand.ExecuteNonQueryAsync();
                             }
-                            catch (SqlException ex)
+                            catch (SqlException)
                             {
                                 transaction.Rollback();
-                                throw ex;
+                                throw;
                             }
                             using (var relCommand = new SqlCommand(string.Format(SqlServerQueries.AddPolicyInsertRelation, rel.Key), con, transaction))
                             {
@@ -340,10 +340,10 @@ namespace Zuehlke.Hades.Manager
                                 {
                                     await relCommand.ExecuteNonQueryAsync();
                                 }
-                                catch (SqlException ex)
+                                catch (SqlException)
                                 {
                                     transaction.Rollback();
-                                    throw ex;
+                                    throw;
                                 }
                             }
                         }
@@ -354,9 +354,9 @@ namespace Zuehlke.Hades.Manager
         }
 
         /// <summary>
-        /// Reads the policies from the provided <see cref="SqlDataReader"/> into a <see cref="List{Policy}"/>
+        /// Reads the policies from the provided <see cref="System.Data.SqlClient.SqlDataReader"/> into a <see cref="List{Policy}"/>
         /// </summary>
-        /// <param name="reader">The <see cref="SqlDataReader"/> to read from</param>
+        /// <param name="reader">The <see cref="System.Data.SqlClient.SqlDataReader"/> to read from</param>
         /// <returns>List of policies</returns>
         private async Task<List<Policy>> GetPoliciesFromRowsAsync(SqlDataReader reader)
         {
@@ -408,11 +408,11 @@ namespace Zuehlke.Hades.Manager
             }
             return null;
         }
-        private static String Sha256Hash(String value)
+        private static string Sha256Hash(string value)
         {
-            using (SHA256 hash = SHA256.Create())
+            using (var hash = SHA256.Create())
             {
-                return String.Concat(hash
+                return string.Concat(hash
                   .ComputeHash(Encoding.UTF8.GetBytes(value))
                   .Select(item => item.ToString("x2")));
             }

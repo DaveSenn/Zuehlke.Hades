@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using Zuehlke.Hades.Interfaces;
 
-namespace Zuehlke.Hades.Matcher
+namespace Zuehlke.Hades.SqlServer.Matcher
 {
     /// <summary>
     /// Converts a t-sql like pattern to a C# regex pattern

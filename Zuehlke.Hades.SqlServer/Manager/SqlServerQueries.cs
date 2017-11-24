@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 
-namespace Zuehlke.Hades.Manager
+namespace Zuehlke.Hades.SqlServer.Manager
 {
     public static class SqlServerQueries
     {

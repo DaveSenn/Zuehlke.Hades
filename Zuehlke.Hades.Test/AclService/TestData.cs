@@ -6,7 +6,7 @@ namespace Zuehlke.Hades.Test.AclService
 {
     public static class TestData
     {
-        public static List<PolicyCreationRequest> PolicyCreationRequests => new List<PolicyCreationRequest>
+        public static IEnumerable<PolicyCreationRequest> PolicyCreationRequests => new List<PolicyCreationRequest>
         {
             new PolicyCreationRequest
             {
@@ -50,7 +50,7 @@ namespace Zuehlke.Hades.Test.AclService
                 Effect = RequestEffect.Allow
             }
         };
-        public static List<AccessRequest> AccessGrantedRequests = new List<AccessRequest>
+        public static readonly List<AccessRequest> AccessGrantedRequests = new List<AccessRequest>
         {
             new AccessRequest
             {
@@ -82,7 +82,7 @@ namespace Zuehlke.Hades.Test.AclService
                 Resource = "a"
             }
         };
-        public static List<AccessRequest> AccessDeniedRequests = new List<AccessRequest>
+        public static readonly List<AccessRequest> AccessDeniedRequests = new List<AccessRequest>
         {
             new AccessRequest
             {
@@ -119,7 +119,7 @@ namespace Zuehlke.Hades.Test.AclService
                 Resource = "abc"
             }
         };
-        public static List<AccessRequest> AccessExplicitlyDeniedRequest = new List<AccessRequest>
+        public static readonly List<AccessRequest> AccessExplicitlyDeniedRequest = new List<AccessRequest>
         {
             new AccessRequest
             {
